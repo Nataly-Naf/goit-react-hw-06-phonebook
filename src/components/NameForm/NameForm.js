@@ -1,8 +1,11 @@
 import { Formik, ErrorMessage } from 'formik';
-import { Component } from 'react';
+import {useState } from 'react';
 import * as Yup from 'yup';
 import { StyledForm, AddBtn, StyledField } from './NameForm.styled';
 import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
+
 
 const formSquema = Yup.object().shape({
   name: Yup.string()
@@ -11,37 +14,37 @@ const formSquema = Yup.object().shape({
     .required('Required'),
   number: Yup.number().required('Required'),
 });
-export class NameForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
-  handleInputChange = evt => {
+
+
+export const NameForm = () => {
+    const dispatch = useDispatch();
+  const [value, setValue] = useState(0);
+
+  const handleInputChange = evt => {
     const { value, name } = evt.target;
-        this.setState({ [name]: value.trim()});
+        setValue({[name]: value.trim()});
   };
 
-  handleSubmit = (values, actions) => {
-    this.props.onSubmit(values);
+  const handleSubmit = (values, actions) => {
+     dispatch(addContact(values))
+    // this.props.onSubmit(values);
     actions.resetForm();
     
   };
 
-  render() {
-    return (
-      <Formik
+ 
+  return  <Formik
         initialValues={{ id: nanoid(), name: '', number: '' }}
         validationSchema={formSquema}
-        onSubmit={this.handleSubmit}
-        
-      >
+        onSubmit={handleSubmit}
+              >
         <StyledForm>
           <label>
             {' '}
             Name
             <StyledField
               name="name"
-              onInput={this.handleInputChange}
+              onInput={handleInputChange}
               placeholder="Name"
             />
             <ErrorMessage name="name" />
@@ -52,7 +55,7 @@ export class NameForm extends Component {
             Number
             <StyledField
               name="number"
-              onInput={this.handleInputChange}
+              onInput={handleInputChange}
               placeholder="Phone number"
             />
             <ErrorMessage name="number" />
@@ -61,6 +64,8 @@ export class NameForm extends Component {
           <AddBtn type="submit">Add contact</AddBtn>
         </StyledForm>
       </Formik>
-    );
-  }
-}
+    } 
+      
+    
+  
+
