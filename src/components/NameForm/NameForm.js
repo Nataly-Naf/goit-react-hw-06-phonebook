@@ -3,7 +3,7 @@ import {useState } from 'react';
 import * as Yup from 'yup';
 import { StyledForm, AddBtn, StyledField } from './NameForm.styled';
 import { nanoid } from 'nanoid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contactsSlice';
 
 
@@ -19,15 +19,22 @@ const formSquema = Yup.object().shape({
 export const NameForm = () => {
     const dispatch = useDispatch();
   const [value, setValue] = useState(0);
+  console.log(value)
 
   const handleInputChange = evt => {
     const { value, name } = evt.target;
         setValue({[name]: value.trim()});
   };
+  const contacts = useSelector(state => state.contacts.contacts);
 
   const handleSubmit = (values, actions) => {
-     dispatch(addContact(values))
-    // this.props.onSubmit(values);
+ 
+    const isInContacts = contacts.find(({ name }) => name.toLowerCase() === values.name.toLowerCase())
+    if (isInContacts) {
+  return alert(`This contact is in your contacts`)
+}   
+    dispatch(addContact(values))
+    
     actions.resetForm();
     
   };
