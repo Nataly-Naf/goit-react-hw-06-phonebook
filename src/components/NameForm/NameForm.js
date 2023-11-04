@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contactsSlice';
 
 
+
 const formSquema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Too Short!')
@@ -19,16 +20,16 @@ const formSquema = Yup.object().shape({
 export const NameForm = () => {
     const dispatch = useDispatch();
   const [value, setValue] = useState(0);
+   const contacts = useSelector(state=>state.contacts.contacts)
+
   console.log(value)
 
   const handleInputChange = evt => {
     const { value, name } = evt.target;
         setValue({[name]: value.trim()});
   };
-  const contacts = useSelector(state => state.contacts.contacts);
 
   const handleSubmit = (values, actions) => {
- 
     const isInContacts = contacts.find(({ name }) => name.toLowerCase() === values.name.toLowerCase())
     if (isInContacts) {
   return alert(`This contact is in your contacts`)
